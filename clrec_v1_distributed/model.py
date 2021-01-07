@@ -5,7 +5,7 @@ EMB_PT_SIZE = 128 * 1024
 DNN_PT_SIZE = 32 * 1024
 
 # Don't use random_uniform_init if you are using the queue-based negative sampling.
-# We need to use random_normal instead of random_uniform so that l2-the normalized
+# We need to use random_normal instead of random_uniform so that the l2-normalized
 # embeddings are evenly distributed on the unit hypersphere.
 def get_unit_emb_initializer(emb_sz):
     # initialize emb this way so that the norm is around one
