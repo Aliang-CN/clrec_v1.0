@@ -4,6 +4,10 @@ import tensorflow as tf
 EMB_PT_SIZE = 128 * 1024
 DNN_PT_SIZE = 32 * 1024
 
+# Don't use random_uniform_init if you are using the queue-based negative sampling. Use this!
+def get_unit_emb_initializer(emb_sz):
+    # initialize emb this way so that the norm is around one
+    return tf.random_normal_initializer(mean=0.0, stddev=float(emb_sz ** -0.5))
 
 class NodeEmbedding(object):
     def __init__(self, name, FLAGS, ps_num=None):
@@ -25,7 +29,7 @@ class NodeEmbedding(object):
         with tf.variable_scope(self.name + '_item_target_embedding', reuse=tf.AUTO_REUSE,
                                partitioner=emb_partitioner) as scope:
             self.emb_table = tf.get_variable("emb_lookup_table", [self.node_size, self.emb_size],
-                                             partitioner=emb_partitioner)
+                                             initializer=get_unit_emb_initializer(self.emb_size), partitioner=emb_partitioner)
 
         with tf.variable_scope(self.name + '_item_target_bias', reuse=tf.AUTO_REUSE,
                                partitioner=emb_partitioner) as scope:
